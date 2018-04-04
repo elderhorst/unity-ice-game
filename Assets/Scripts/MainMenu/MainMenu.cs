@@ -8,21 +8,43 @@ namespace MainMenu {
 
 		[SerializeField] private Button _storyButton;
 		[SerializeField] private Button _zenButton;
+		[SerializeField] private Image _transitionImage;
+
+		private string _sceneToLoad;
 
 		private void Start() {
+
+			StartCoroutine(Actions.ActionManager.fadeTransition(false, _transitionImage, onFinishedEnterTransition));
+		}
+
+		private void onFinishedEnterTransition() {
 
 			_storyButton.onClick.AddListener(onClickStoryButton);
 			_zenButton.onClick.AddListener(onClickZenButton);
 		}
 
+		private void startExitTransition() {
+
+			StartCoroutine(Actions.ActionManager.fadeTransition(true, _transitionImage, onExitTransitionEnd));
+		}
+
+		private void onExitTransitionEnd() {
+
+			SceneManager.LoadScene(_sceneToLoad);
+		}
+
 		private void onClickStoryButton() {
 
-			SceneManager.LoadScene("Level");
+			_sceneToLoad = "Level";
+
+			startExitTransition();
 		}
 
 		private void onClickZenButton() {
 
-			SceneManager.LoadScene("Zen");
+			_sceneToLoad = "Zen";
+
+			startExitTransition();
 		}
 	}
 }
