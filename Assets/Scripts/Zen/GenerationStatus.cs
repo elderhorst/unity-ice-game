@@ -17,7 +17,7 @@
 			MinPathCount = 5;
 			CurrentPathCount = 1;
 			NewPathAttempts = 1;
-			PathAttempLimit = 10000;
+			PathAttempLimit = 100;
 		}
 	}
 }

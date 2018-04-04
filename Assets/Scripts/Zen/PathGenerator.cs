@@ -21,7 +21,7 @@ namespace Zen {
 			
 			bool createdValidPath = false;
 			int attempts = 0;
-			int maxAttempts = 500;
+			int maxAttempts = 1000;
 
 			while (!createdValidPath) {
 			
@@ -58,11 +58,20 @@ namespace Zen {
 
 				if (_status.CurrentPathCount >= _status.MinPathCount && Random.value <= 0.20f) {
 
+					masterPath.TileMap[(int)masterPath.EndPoint.x, (int)masterPath.EndPoint.y] = 2;
+
 					break;
 				}
 			}
 
-			return true;
+			bool isValid = isPathValid(masterPath);
+
+			if (isValid) {
+
+				_path = masterPath;
+			}
+
+			return isValid;
 		}
 
 		private Path attemptToGenerateLine(Path existingPath) {
@@ -79,10 +88,14 @@ namespace Zen {
 
 				Path lineAttempt = makeLine(path);
 
+				_status.NewPathAttempts++;
+
 				if (!lineAttempt.MarkedAsFailed) {
 
 					path = lineAttempt;
 					path.LastDirection = path.CurrentDirection;
+
+					_status.CurrentPathCount++;
 
 					return path;
 				}
@@ -94,6 +107,38 @@ namespace Zen {
 		private Path makeLine(Path path) {
 
 			Vector2 step = getStepForDirection(path.CurrentDirection);
+
+			bool atEndOfLine = false;
+
+			while (!atEndOfLine) {
+
+				path.PathMap[(int)path.CurrentPosition.x, (int)path.CurrentPosition.y] = 1;
+
+				path.EndPoint = path.CurrentPosition;
+				path.CurrentPosition += step;
+				Vector2 nextPosition = path.CurrentPosition + step;
+
+				if (checkIfNextStepIsSolid(path, path.CurrentPosition)) {
+
+					path.CurrentPosition -= step;
+					atEndOfLine = true;
+				}
+				else if (Random.value < 0.20f) {
+
+					bool nextStepIsSolid = checkIfNextStepIsSolid(path, nextPosition);
+
+					if (!nextStepIsSolid && path.PathMap[(int)(nextPosition.x), (int)(nextPosition.y)] != 1) {
+
+						path.TileMap[(int)(nextPosition.x), (int)(nextPosition.y)] = 3;
+
+						atEndOfLine = true;
+					}
+					else if (nextStepIsSolid) {
+
+						atEndOfLine = true;
+					}
+				}
+			}
 
 			return path;
 		}
@@ -112,6 +157,34 @@ namespace Zen {
 			}
 
 			return step;
+		}
+
+		private bool checkIfNextStepIsSolid(Path path, Vector2 nextPosition) {
+
+			if (nextPosition.x < 0 || nextPosition.y < 0 || nextPosition.x >= path.Width || nextPosition.y >= path.Height) {
+
+				return true;
+			}
+
+			if (path.TileMap[(int)nextPosition.x, (int)nextPosition.y] == 3) {
+
+				return true;
+			}
+
+			return false;
+		}
+
+		private bool isPathValid(Path path) {
+
+			if (path.StartPoint == path.EndPoint ||
+				 _status.NewPathAttempts > _status.PathAttempLimit ||
+				 path.TileMap[(int)path.StartPoint.x, (int)path.StartPoint.y] == 2 ||
+				 path.TileMap[(int)path.StartPoint.x, (int)path.StartPoint.y] == 3) {
+
+				return false;
+			}
+
+			return true;
 		}
 	}
 }
