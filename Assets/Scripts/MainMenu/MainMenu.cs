@@ -8,6 +8,7 @@ namespace MainMenu {
 
 		[SerializeField] private Button _storyButton;
 		[SerializeField] private Button _zenButton;
+		[SerializeField] private Button _exitButton;
 		[SerializeField] private Image _transitionImage;
 
 		private string _sceneToLoad;
@@ -21,6 +22,7 @@ namespace MainMenu {
 
 			_storyButton.onClick.AddListener(onClickStoryButton);
 			_zenButton.onClick.AddListener(onClickZenButton);
+			_exitButton.onClick.AddListener(onClickExitButton);
 		}
 
 		private void startExitTransition() {
@@ -45,6 +47,11 @@ namespace MainMenu {
 			_sceneToLoad = "Zen";
 
 			startExitTransition();
+		}
+
+		private void onClickExitButton() {
+
+			Application.Quit();
 		}
 	}
 }
