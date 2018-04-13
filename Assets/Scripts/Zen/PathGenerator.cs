@@ -7,7 +7,6 @@ namespace Zen {
 
 	public class PathGenerator {
 
-		Path _path;
 		GenerationStatus _status;
 
 		public PathGenerator() {
@@ -16,33 +15,38 @@ namespace Zen {
 
 		public int[,] generate(int width, int height, Vector2 startPoint) {
 
-			_path = new Path(width, height, startPoint);
+			Path? path;
 			_status = new GenerationStatus();
 			
-			bool createdValidPath = false;
 			int attempts = 0;
 			int maxAttempts = 1000;
 
-			while (!createdValidPath) {
+			while (true) {
 			
-				createdValidPath = attemptToGeneratePath();
+				path = attemptToGeneratePath(width, height, startPoint);
 
 				attempts++;
 
-				if (attempts >= maxAttempts) {
+				if (path != null || attempts >= maxAttempts) {
 
-					Debug.LogWarning(width + " : " + height + " : " + startPoint);
 					break;
 				}
 			}
 
-			return _path.TileMap;
+			if (path == null) {
+
+				Debug.LogWarning("RECURSION");
+
+				return generate(width, height, startPoint);
+			}
+
+			return path.Value.TileMap;
 		}
 
-		private bool attemptToGeneratePath() {
+		private Path? attemptToGeneratePath(int width, int height, Vector2 startPoint) {
 
 			// Create a copy of _path. As iterations are successfull path will be copied back to _path.
-			Path masterPath = _path;
+			Path masterPath = new Path(width, height, startPoint);
 			bool finishedGeneratingPath = false;
 
 			_status.reset();
@@ -68,10 +72,10 @@ namespace Zen {
 
 			if (isValid) {
 
-				_path = masterPath;
+				return masterPath;
 			}
 
-			return isValid;
+			return null;
 		}
 
 		private Path attemptToGenerateLine(Path existingPath) {
@@ -176,6 +180,7 @@ namespace Zen {
 
 		private bool isPathValid(Path path) {
 
+			// Check if there is something placed on the start position.
 			if (path.StartPoint == path.EndPoint ||
 				 _status.NewPathAttempts > _status.PathAttempLimit ||
 				 path.TileMap[(int)path.StartPoint.x, (int)path.StartPoint.y] == 2 ||
@@ -184,7 +189,48 @@ namespace Zen {
 				return false;
 			}
 
+			// Check if the path can be solved in two or less moves.
+			if (isStraightLineToEnd(path)) {
+
+				return false;
+			}
+
 			return true;
+		}
+
+		private bool isStraightLineToEnd(Path path) {
+
+			if (path.StartPoint.x == path.EndPoint.x || path.StartPoint.y == path.EndPoint.y) {
+
+				int start = (path.StartPoint.x == path.EndPoint.x) ? (int)path.StartPoint.x : (int)path.StartPoint.y;
+				int end = (path.StartPoint.x == path.EndPoint.x) ? (int)path.EndPoint.x : (int)path.EndPoint.y;
+				
+				Vector2 position = path.StartPoint;
+				Vector2 delta = (path.StartPoint.x == path.EndPoint.x) ? new Vector2(1, 0) : new Vector2(0, 1);
+
+				int increment = (start <= end) ? 1 : -1;
+				delta *= (start <= end) ? 1 : -1;
+
+				bool obstacleInWay = false;
+
+				for (int i = start; i != end; i += increment) {
+
+					if (path.TileMap[(int)position.x, (int)position.y] == 3) {
+
+						obstacleInWay = true;
+						break;
+					}
+
+					position += delta;
+				}
+
+				if (!obstacleInWay) {
+
+					return true;
+				}
+			}
+
+			return false;
 		}
 	}
 }
