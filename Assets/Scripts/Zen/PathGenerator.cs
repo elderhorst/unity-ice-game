@@ -190,7 +190,7 @@ namespace Zen {
 			}
 
 			// Check if the path can be solved in two or less moves.
-			if (isStraightLineToEnd(path)) {
+			if (isSolvableInLessThanTwoMoves(path)) {
 
 				return false;
 			}
@@ -198,15 +198,15 @@ namespace Zen {
 			return true;
 		}
 
-		private bool isStraightLineToEnd(Path path) {
+		private bool isStraightLineToEnd(Path path, Vector2 startPoint, Vector2 endPoint) {
 
-			if (path.StartPoint.x == path.EndPoint.x || path.StartPoint.y == path.EndPoint.y) {
+			if (startPoint.x == endPoint.x || startPoint.y == endPoint.y) {
 
-				int start = (path.StartPoint.x == path.EndPoint.x) ? (int)path.StartPoint.x : (int)path.StartPoint.y;
-				int end = (path.StartPoint.x == path.EndPoint.x) ? (int)path.EndPoint.x : (int)path.EndPoint.y;
+				int start = (startPoint.x == endPoint.x) ? (int)startPoint.x : (int)startPoint.y;
+				int end = (startPoint.x == endPoint.x) ? (int)endPoint.x : (int)endPoint.y;
 				
-				Vector2 position = path.StartPoint;
-				Vector2 delta = (path.StartPoint.x == path.EndPoint.x) ? new Vector2(1, 0) : new Vector2(0, 1);
+				Vector2 position = startPoint;
+				Vector2 delta = (startPoint.x == endPoint.x) ? new Vector2(1, 0) : new Vector2(0, 1);
 
 				int increment = (start <= end) ? 1 : -1;
 				delta *= (start <= end) ? 1 : -1;
@@ -227,6 +227,49 @@ namespace Zen {
 				if (!obstacleInWay) {
 
 					return true;
+				}
+			}
+
+			return false;
+		}
+
+		private bool isSolvableInLessThanTwoMoves(Path path) {
+
+			// Up, Right, Down, Left
+			Vector2[] deltas = { new Vector2(0, 1), new Vector2(1, 0), new Vector2(0, -1), new Vector2(-1, 0) };
+
+			// Branch out in lines from the starting point.
+			foreach (Vector2 firstDelta in deltas) {
+
+				Vector2 currentPosition = path.StartPoint;
+
+				while (true) {
+
+					Vector2 nextPosition = currentPosition + firstDelta;
+					bool nextStepIsSolid = checkIfNextStepIsSolid(path, nextPosition);
+
+					if (nextStepIsSolid && currentPosition != path.StartPoint) {
+						
+						// Check if end can be gotten to from the end of this line.
+						if (isStraightLineToEnd(path, currentPosition, path.EndPoint)) {
+
+							return true;
+						}
+
+						break;
+					}
+					else if (nextStepIsSolid) {
+
+						break;
+					}
+					else if (path.TileMap[(int)nextPosition.x, (int)nextPosition.y] == 2) {
+
+						return true;
+					}
+					else {
+
+						currentPosition = nextPosition;
+					}
 				}
 			}
 
