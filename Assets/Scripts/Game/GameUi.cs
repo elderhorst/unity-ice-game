@@ -29,6 +29,8 @@ namespace Game {
 
 		private void onClickBackButton() {
 
+			Game.SoundManager.Instance.playEffect("ButtonClick");
+
 			StartCoroutine(Actions.ActionManager.fadeTransition(true, _transitionImage, onFinishedExitTransition));
 		}
 	}

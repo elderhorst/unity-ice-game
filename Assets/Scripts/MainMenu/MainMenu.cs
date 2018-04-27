@@ -39,12 +39,16 @@ namespace MainMenu {
 
 		private void onClickStoryButton() {
 
+			Game.SoundManager.Instance.playEffect("ButtonClick");
+
 			_sceneToLoad = "Level";
 
 			startExitTransition();
 		}
 
 		private void onClickZenButton() {
+
+			Game.SoundManager.Instance.playEffect("ButtonClick");
 
 			_sceneToLoad = "Zen";
 
