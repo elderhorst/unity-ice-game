@@ -5,6 +5,8 @@ namespace Game {
 
     public class Player : MonoBehaviour {
 
+        [SerializeField] private SpriteRenderer _sprite;
+
         private bool _isMoving;
         private bool _isOnLadder;
 
@@ -30,6 +32,29 @@ namespace Game {
 
             _isMoving = false;
             _isOnLadder = false;
+        }
+
+        public void setToTransparent() {
+
+            Color color = _sprite.color;
+            color.a = 0;
+
+            _sprite.color = color;
+        }
+
+        public void fade(bool fadeIn, System.Action onDone = null) {
+
+            _isMoving = true;
+
+            StartCoroutine(Actions.ActionManager.fadeTransition(fadeIn, _sprite, () => {
+
+                _isMoving = false;
+
+                if (onDone != null) {
+                
+                    onDone();
+                }
+            }));
         }
 
         public void handleMovement(Movement direction, TileType[,] collisionMap) {

@@ -27,6 +27,16 @@ namespace Level {
             _player.transform.localPosition = new Vector3(0.5f * gridStart.x, -0.5f * gridStart.y, -0.5f);
         }
 
+        public override void handleUiFinishedEnterTransition() {
+
+            _activeLevel = true;
+        }
+
+        public override void handleFinishedLevel() {
+
+            goToNextLevel();
+        }
+
         protected override void goToNextLevel() {
 
             foreach (Game.Tile tile in _tiles) {

@@ -8,6 +8,7 @@ namespace Game {
 
 		[SerializeField] private Button _backButton;
 		[SerializeField] private Image _transitionImage;
+		[SerializeField] private Level _level;
 
 		private void Start() {
 
@@ -17,6 +18,8 @@ namespace Game {
 		private void onFinishedEnterTransition() {
 
 			_backButton.onClick.AddListener(onClickBackButton);
+
+			_level.handleUiFinishedEnterTransition();
 		}
 
 		private void onFinishedExitTransition() {

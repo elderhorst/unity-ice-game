@@ -17,6 +17,8 @@ namespace Game {
 
 		protected int _currentLevel = 1;
 
+        protected bool _activeLevel = false;
+
 		protected void Awake() {
 
 			_inputManager = new Managers.InputManager();
@@ -24,13 +26,13 @@ namespace Game {
 
 		protected void Update() {
 
-            if (_player.IsMoving) {
+            if (!_activeLevel || _player.IsMoving) {
 
                 return;
             }
             else if (_player.IsOnLadder) {
 
-                goToNextLevel();
+                handleFinishedLevel();
                 return;
             }
 
@@ -43,6 +45,8 @@ namespace Game {
         }
 
 		public abstract void load(int level);
+        public abstract void handleUiFinishedEnterTransition();
+        public abstract void handleFinishedLevel();
 
 		protected abstract void goToNextLevel();
 	}

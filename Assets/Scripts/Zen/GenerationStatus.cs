@@ -14,7 +14,7 @@
 
 		public void reset() {
 
-			MinPathCount = 5;
+			MinPathCount = 6;
 			CurrentPathCount = 1;
 			NewPathAttempts = 1;
 			PathAttempLimit = 100;
