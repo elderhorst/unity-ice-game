@@ -84,6 +84,8 @@ namespace Zen {
 
         public override void handleFinishedLevel() {
 
+            Game.SoundManager.Instance.playEffect("LevelComplete");
+
             _activeLevel = false;
 
             _player.fade(false, goToNextLevel);
