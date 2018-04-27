@@ -34,6 +34,8 @@ namespace Level {
 
         public override void handleFinishedLevel() {
 
+            Game.SoundManager.Instance.playEffect("LevelComplete");
+
             goToNextLevel();
         }
 
