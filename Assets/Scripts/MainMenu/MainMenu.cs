@@ -15,6 +15,8 @@ namespace MainMenu {
 
 		private void Start() {
 
+			Game.SoundManager.Instance.playSong("Overworld");
+
 			StartCoroutine(Actions.ActionManager.fadeTransition(false, _transitionImage, onFinishedEnterTransition));
 		}
 
