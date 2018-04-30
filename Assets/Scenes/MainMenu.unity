@@ -694,7 +694,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "<b><u>Programing and Art</u></b>\nMichael Elderhorst\n\n<b><u>Music</u></b>\n\"Overworld\"
+  m_Text: "<b>Programing and Art</b>\nMichael Elderhorst\n\n<b>Music</b>\n\"Overworld\"
     Kevin MacLeod (incompetech.com)\r\nLicensed under Creative Commons: By Attribution
     3.0 License\r\nhttp://creativecommons.org/licenses/by/3.0/"
 --- !u!222 &898296336
