@@ -8,8 +8,11 @@ namespace MainMenu {
 
 		[SerializeField] private Button _storyButton;
 		[SerializeField] private Button _zenButton;
-		[SerializeField] private Button _exitButton;
+		[SerializeField] private Button _creditsButton;
+		[SerializeField] private Button _backButton;
 		[SerializeField] private Image _transitionImage;
+		[SerializeField] private Transform _menu;
+		[SerializeField] private Transform _credits;
 
 		private string _sceneToLoad;
 
@@ -17,14 +20,39 @@ namespace MainMenu {
 
 			Game.SoundManager.Instance.playSong("Overworld");
 
-			StartCoroutine(Actions.ActionManager.fadeTransition(false, _transitionImage, onFinishedEnterTransition));
+			StartCoroutine(Actions.ActionManager.fadeTransition(false, _transitionImage, enableMenuButtons));
 		}
 
-		private void onFinishedEnterTransition() {
+		private void moveMenus(Vector3 delta, System.Action doneCallback) {
+
+			float duration = 1.25f;
+
+			StartCoroutine(Actions.ActionManager.translateObject(_menu.gameObject, _menu.localPosition, _menu.localPosition + delta, duration));
+			StartCoroutine(Actions.ActionManager.translateObject(_credits.gameObject, _credits.localPosition, _credits.localPosition + delta, duration, doneCallback));
+		}
+
+		private void enableMenuButtons() {
 
 			_storyButton.onClick.AddListener(onClickStoryButton);
 			_zenButton.onClick.AddListener(onClickZenButton);
-			_exitButton.onClick.AddListener(onClickExitButton);
+			_creditsButton.onClick.AddListener(onClickCreditsButton);
+		}
+
+		private void disableMenuButtons() {
+
+			_storyButton.onClick.RemoveListener(onClickStoryButton);
+			_zenButton.onClick.RemoveListener(onClickZenButton);
+			_creditsButton.onClick.RemoveListener(onClickCreditsButton);
+		}
+
+		private void enableCreditsButton() {
+
+			_backButton.onClick.AddListener(onClickBackButton);
+		}
+
+		private void disableCreditsButton() {
+
+			_backButton.onClick.RemoveListener(onClickBackButton);
 		}
 
 		private void startExitTransition() {
@@ -55,9 +83,24 @@ namespace MainMenu {
 			startExitTransition();
 		}
 
-		private void onClickExitButton() {
+		private void onClickCreditsButton() {
 
-			Application.Quit();
+			Game.SoundManager.Instance.playEffect("ButtonClick");
+
+			Vector3 delta = _menu.localPosition - _credits.localPosition;
+			
+			disableMenuButtons();
+			moveMenus(delta, enableCreditsButton);
+		}
+
+		private void onClickBackButton() {
+
+			Game.SoundManager.Instance.playEffect("ButtonClick");
+
+			Vector3 delta = _credits.localPosition - _menu.localPosition;
+			
+			disableCreditsButton();
+			moveMenus(delta, enableMenuButtons);
 		}
 	}
 }
