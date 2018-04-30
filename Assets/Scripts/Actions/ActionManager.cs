@@ -60,13 +60,13 @@ namespace Actions {
 
 			while (currentTime <= duration) {
 
+				currentTime += Time.deltaTime;
+
 				float x = Mathf.Lerp(start.x, end.x, currentTime / duration);
 				float y = Mathf.Lerp(start.y, end.y, currentTime / duration);
 				float z = Mathf.Lerp(start.z, end.z, currentTime / duration);
 
 				obj.transform.localPosition = new Vector3(x, y, z);
-
-				currentTime += Time.deltaTime;
 
 				yield return null;
 			}
