@@ -8,11 +8,17 @@ namespace MainMenu {
 
 		[SerializeField] private Button _storyButton;
 		[SerializeField] private Button _zenButton;
+		[SerializeField] private Button _instructionsButton;
 		[SerializeField] private Button _creditsButton;
-		[SerializeField] private Button _backButton;
+
 		[SerializeField] private Image _transitionImage;
+
 		[SerializeField] private Transform _menu;
-		[SerializeField] private Transform _credits;
+		[SerializeField] private Transform _subMenuOffscreen;
+		[SerializeField] private SubMenu _instructions;
+		[SerializeField] private SubMenu _credits;
+
+		private SubMenu _currentSubMenu;
 
 		private string _sceneToLoad;
 
@@ -23,18 +29,28 @@ namespace MainMenu {
 			StartCoroutine(Actions.ActionManager.fadeTransition(false, _transitionImage, enableMenuButtons));
 		}
 
+		private void setSubMenu(SubMenu subMenu) {
+
+			_currentSubMenu = subMenu;
+
+			_currentSubMenu.transform.localPosition = _subMenuOffscreen.localPosition;
+		}
+
 		private void moveMenus(Vector3 delta, System.Action doneCallback) {
 
+			Vector3 subStart = _currentSubMenu.transform.localPosition;
+			Vector3 subEnd = _currentSubMenu.transform.localPosition + delta;
 			float duration = 1.25f;
 
 			StartCoroutine(Actions.ActionManager.translateObject(_menu.gameObject, _menu.localPosition, _menu.localPosition + delta, duration));
-			StartCoroutine(Actions.ActionManager.translateObject(_credits.gameObject, _credits.localPosition, _credits.localPosition + delta, duration, doneCallback));
+			StartCoroutine(Actions.ActionManager.translateObject(_currentSubMenu.gameObject, subStart, subEnd, duration, doneCallback));
 		}
 
 		private void enableMenuButtons() {
 
 			_storyButton.onClick.AddListener(onClickStoryButton);
 			_zenButton.onClick.AddListener(onClickZenButton);
+			_instructionsButton.onClick.AddListener(onClickInstructionsButton);
 			_creditsButton.onClick.AddListener(onClickCreditsButton);
 		}
 
@@ -42,17 +58,22 @@ namespace MainMenu {
 
 			_storyButton.onClick.RemoveListener(onClickStoryButton);
 			_zenButton.onClick.RemoveListener(onClickZenButton);
+			_instructionsButton.onClick.RemoveListener(onClickInstructionsButton);
 			_creditsButton.onClick.RemoveListener(onClickCreditsButton);
 		}
 
-		private void enableCreditsButton() {
+		private void enableSubMenuButton() {
 
-			_backButton.onClick.AddListener(onClickBackButton);
+			_currentSubMenu.enableButtons();
+
+			_currentSubMenu.BackButtonClick += onClickBackButton;
 		}
 
-		private void disableCreditsButton() {
+		private void disableSubMenuButton() {
 
-			_backButton.onClick.RemoveListener(onClickBackButton);
+			_currentSubMenu.disableButtons();
+
+			_currentSubMenu.BackButtonClick -= onClickBackButton;
 		}
 
 		private void startExitTransition() {
@@ -83,23 +104,37 @@ namespace MainMenu {
 			startExitTransition();
 		}
 
+		private void onClickInstructionsButton() {
+
+			Game.SoundManager.Instance.playEffect("ButtonClick");
+
+			setSubMenu(_instructions);
+			disableMenuButtons();
+
+			Vector3 delta = _menu.localPosition - _currentSubMenu.transform.localPosition;
+
+			moveMenus(delta, enableSubMenuButton);
+		}
+
 		private void onClickCreditsButton() {
 
 			Game.SoundManager.Instance.playEffect("ButtonClick");
 
-			Vector3 delta = _menu.localPosition - _credits.localPosition;
-			
+			setSubMenu(_credits);
 			disableMenuButtons();
-			moveMenus(delta, enableCreditsButton);
+
+			Vector3 delta = _menu.localPosition - _currentSubMenu.transform.localPosition;
+
+			moveMenus(delta, enableSubMenuButton);
 		}
 
 		private void onClickBackButton() {
 
 			Game.SoundManager.Instance.playEffect("ButtonClick");
 
-			Vector3 delta = _credits.localPosition - _menu.localPosition;
+			Vector3 delta = _currentSubMenu.transform.localPosition - _menu.localPosition;
 			
-			disableCreditsButton();
+			disableSubMenuButton();
 			moveMenus(delta, enableMenuButtons);
 		}
 	}
