@@ -7,8 +7,11 @@ namespace Game {
 	public class SoundManager : MonoBehaviour {
 
 		private static SoundManager _instance;
-		private AudioSource _songSource;
+		private AudioSource _musicSource;
 		private List<AudioSource> _effects;
+
+		private float _musicVolume;
+		private float _effectVolume;
 
 		public static SoundManager Instance {
 			get {
@@ -23,12 +26,49 @@ namespace Game {
 			}
 		}
 
+		public float MusicVolume {
+			get {
+
+				return _musicVolume;
+			 }
+
+			set {
+
+				_musicVolume = Mathf.Clamp01(value);
+
+				if (_musicSource != null) {
+
+					_musicSource.volume = _musicVolume;
+				}
+			}
+		}
+
+		public float EffectVolume {
+			get {
+
+				return _effectVolume;
+			 }
+
+			set {
+
+				_effectVolume = Mathf.Clamp01(value);
+
+				foreach (AudioSource effect in _effects) {
+
+					effect.volume = _effectVolume;
+				}
+			}
+		}
+
 		private void Awake() {
 
 			gameObject.name = "SoundManager";
 			DontDestroyOnLoad(this);
 
 			_effects = new List<AudioSource>();
+
+			MusicVolume = 1f;
+			EffectVolume = 1f;
 		}
 
 		private void Update() {
@@ -45,27 +85,28 @@ namespace Game {
 			}
 		}
 
-		public void playSong(string name) {
+		public void playMusic(string name) {
 
 			AudioClip clip = Resources.Load<AudioClip>("Sounds/Music/" + name);
 			
-			if (_songSource != null) {
+			if (_musicSource != null) {
 
-				if (clip == _songSource.clip) {
+				if (clip == _musicSource.clip) {
 				
 					return;
 				}
 
-				_songSource.Stop();
+				_musicSource.Stop();
 			}
 			else {
 
-				_songSource = gameObject.AddComponent<AudioSource>();
+				_musicSource = gameObject.AddComponent<AudioSource>();
 			}
 
-			_songSource.clip = clip;
-			_songSource.loop = true;
-			_songSource.Play();
+			_musicSource.clip = clip;
+			_musicSource.loop = true;
+			_musicSource.volume = MusicVolume;
+			_musicSource.Play();
 		}
 
 		public void playEffect(string name) {
@@ -74,6 +115,7 @@ namespace Game {
 			AudioSource source = gameObject.AddComponent<AudioSource>();
 
 			source.clip = clip;
+			source.volume = EffectVolume;
 			source.Play();
 
 			_effects.Add(source);
