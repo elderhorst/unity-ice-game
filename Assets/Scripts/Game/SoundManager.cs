@@ -6,6 +6,9 @@ namespace Game {
 
 	public class SoundManager : MonoBehaviour {
 
+		private const string MusicVolumeKey = "MusicVolume";
+		private const string EffectsVolumeKey = "EffectsVolume";
+
 		private static SoundManager _instance;
 		private AudioSource _musicSource;
 		private List<AudioSource> _effects;
@@ -40,6 +43,8 @@ namespace Game {
 
 					_musicSource.volume = _musicVolume;
 				}
+
+				PlayerPrefs.SetFloat(MusicVolumeKey, _musicVolume);
 			}
 		}
 
@@ -57,6 +62,8 @@ namespace Game {
 
 					effect.volume = _effectVolume;
 				}
+
+				PlayerPrefs.SetFloat(EffectsVolumeKey, _effectVolume);
 			}
 		}
 
@@ -67,8 +74,8 @@ namespace Game {
 
 			_effects = new List<AudioSource>();
 
-			MusicVolume = 1f;
-			EffectVolume = 1f;
+			_musicVolume = PlayerPrefs.GetFloat(MusicVolumeKey, 1f);
+			_effectVolume = PlayerPrefs.GetFloat(EffectsVolumeKey, 1f);
 		}
 
 		private void Update() {
