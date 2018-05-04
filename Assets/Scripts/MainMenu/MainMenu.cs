@@ -9,6 +9,7 @@ namespace MainMenu {
 		[SerializeField] private Button _storyButton;
 		[SerializeField] private Button _zenButton;
 		[SerializeField] private Button _instructionsButton;
+		[SerializeField] private Button _settingsButton;
 		[SerializeField] private Button _creditsButton;
 
 		[SerializeField] private Image _transitionImage;
@@ -16,6 +17,7 @@ namespace MainMenu {
 		[SerializeField] private Transform _menu;
 		[SerializeField] private Transform _subMenuOffscreen;
 		[SerializeField] private SubMenu _instructions;
+		[SerializeField] private SubMenu _settings;
 		[SerializeField] private SubMenu _credits;
 
 		private SubMenu _currentSubMenu;
@@ -27,6 +29,16 @@ namespace MainMenu {
 			Game.SoundManager.Instance.playMusic("Overworld");
 
 			StartCoroutine(Actions.ActionManager.fadeTransition(false, _transitionImage, enableMenuButtons));
+		}
+
+		private void handleSubMenuClicked(SubMenu subMenu) {
+
+			setSubMenu(subMenu);
+			disableMenuButtons();
+
+			Vector3 delta = _menu.localPosition - _currentSubMenu.transform.localPosition;
+
+			moveMenus(delta, enableSubMenuButton);
 		}
 
 		private void setSubMenu(SubMenu subMenu) {
@@ -51,6 +63,7 @@ namespace MainMenu {
 			_storyButton.onClick.AddListener(onClickStoryButton);
 			_zenButton.onClick.AddListener(onClickZenButton);
 			_instructionsButton.onClick.AddListener(onClickInstructionsButton);
+			_settingsButton.onClick.AddListener(onClickSettingsButton);
 			_creditsButton.onClick.AddListener(onClickCreditsButton);
 		}
 
@@ -59,6 +72,7 @@ namespace MainMenu {
 			_storyButton.onClick.RemoveListener(onClickStoryButton);
 			_zenButton.onClick.RemoveListener(onClickZenButton);
 			_instructionsButton.onClick.RemoveListener(onClickInstructionsButton);
+			_settingsButton.onClick.RemoveListener(onClickSettingsButton);
 			_creditsButton.onClick.RemoveListener(onClickCreditsButton);
 		}
 
@@ -108,24 +122,21 @@ namespace MainMenu {
 
 			Game.SoundManager.Instance.playEffect("ButtonClick");
 
-			setSubMenu(_instructions);
-			disableMenuButtons();
+			handleSubMenuClicked(_instructions);
+		}
 
-			Vector3 delta = _menu.localPosition - _currentSubMenu.transform.localPosition;
+		private void onClickSettingsButton() {
 
-			moveMenus(delta, enableSubMenuButton);
+			Game.SoundManager.Instance.playEffect("ButtonClick");
+
+			handleSubMenuClicked(_settings);
 		}
 
 		private void onClickCreditsButton() {
 
 			Game.SoundManager.Instance.playEffect("ButtonClick");
 
-			setSubMenu(_credits);
-			disableMenuButtons();
-
-			Vector3 delta = _menu.localPosition - _currentSubMenu.transform.localPosition;
-
-			moveMenus(delta, enableSubMenuButton);
+			handleSubMenuClicked(_credits);
 		}
 
 		private void onClickBackButton() {

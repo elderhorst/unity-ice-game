@@ -6,22 +6,22 @@ namespace MainMenu {
 
 	public class SubMenu : MonoBehaviour {
 
-        [SerializeField] private Button _backButton;
+        [SerializeField] protected Button _backButton;
 
         public delegate void ButtonHandler();
         public event ButtonHandler BackButtonClick;
 
-        public void enableButtons() {
+        public virtual void enableButtons() {
 
 			_backButton.onClick.AddListener(onClickBackButton);
 		}
 
-		public void disableButtons() {
+		public virtual void disableButtons() {
 
 			_backButton.onClick.RemoveListener(onClickBackButton);
 		}
 
-        private void onClickBackButton() {
+        protected void onClickBackButton() {
 
             Game.SoundManager.Instance.playEffect("ButtonClick");
 
