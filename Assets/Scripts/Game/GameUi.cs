@@ -10,12 +10,12 @@ namespace Game {
 		[SerializeField] private Image _transitionImage;
 		[SerializeField] private Level _level;
 
-		private void Start() {
+		protected void Start() {
 
 			StartCoroutine(Actions.ActionManager.fadeTransition(false, _transitionImage, onFinishedEnterTransition));
 		}
 
-		private void onFinishedEnterTransition() {
+		protected virtual void onFinishedEnterTransition() {
 
 			_backButton.onClick.AddListener(onClickBackButton);
 
