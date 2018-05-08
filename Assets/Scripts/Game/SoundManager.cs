@@ -74,7 +74,7 @@ namespace Game {
 
 			_effects = new List<AudioSource>();
 
-			_musicVolume = PlayerPrefs.GetFloat(MusicVolumeKey, 1f);
+			_musicVolume = PlayerPrefs.GetFloat(MusicVolumeKey, 0.5f);
 			_effectVolume = PlayerPrefs.GetFloat(EffectsVolumeKey, 1f);
 		}
 
