@@ -25,6 +25,8 @@ namespace Zen {
             _currentLevelIndex = 0;
 
             _previousLevel = _currentLevel - 1;
+            
+            _player.setToTransparent();
 
             load(_currentLevel);
         }
@@ -68,34 +70,28 @@ namespace Zen {
             _player.transform.localPosition = new Vector3(0.5f * gridStart.x, -0.5f * gridStart.y, -0.5f);
             _player.setToTransparent();
 
-            // Transition in level if it is not the first level or a restarted level.
-            if (_currentLevel != 1 || level != _previousLevel) {
+            // Transition in the level.
+            float duration = 1.25f;
+            Vector3 levelOffset = new Vector3(16, 0, 0);
+            _levels[_currentLevelIndex].transform.localPosition += levelOffset;
 
-                float duration = 1.25f;
-                Vector3 levelOffset = new Vector3(16, 0, 0);
-                _levels[_currentLevelIndex].transform.localPosition += levelOffset;
+            Vector3 previousStart = _levels[_previousLevelIndex].transform.localPosition;
+            Vector3 previousEnd = _levels[_previousLevelIndex].transform.localPosition - levelOffset;
+            Vector3 currentStart = _levels[_currentLevelIndex].transform.localPosition;
+            Vector3 currentEnd = _levels[_currentLevelIndex].transform.localPosition - levelOffset;
 
-                Vector3 previousStart = _levels[_previousLevelIndex].transform.localPosition;
-                Vector3 previousEnd = _levels[_previousLevelIndex].transform.localPosition - levelOffset;
-                Vector3 currentStart = _levels[_currentLevelIndex].transform.localPosition;
-                Vector3 currentEnd = _levels[_currentLevelIndex].transform.localPosition - levelOffset;
+            StartCoroutine(Actions.ActionManager.translateObject(_levels[_previousLevelIndex], previousStart, previousEnd, duration));
+            StartCoroutine(Actions.ActionManager.translateObject(_levels[_currentLevelIndex], currentStart, currentEnd, duration, () => {
 
-                StartCoroutine(Actions.ActionManager.translateObject(_levels[_previousLevelIndex], previousStart, previousEnd, duration));
-                StartCoroutine(Actions.ActionManager.translateObject(_levels[_currentLevelIndex], currentStart, currentEnd, duration, () => {
-
-                    handleUiFinishedEnterTransition();
-                }));
-            }
+                handleLevelFinishedEnterTransition();
+            }));
         }
 
         public override void handleUiFinishedEnterTransition() {
 
-            _player.fade(true, () => {
-
-                _activeLevel = true;
-            });
+            _activeLevel = true;
         }
-
+        
         public override void handleFinishedLevel() {
 
             Game.SoundManager.Instance.playEffect("LevelComplete");
@@ -103,6 +99,14 @@ namespace Zen {
             _activeLevel = false;
 
             _player.fade(false, goToNextLevel);
+        }
+
+        public void handleLevelFinishedEnterTransition() {
+
+            _player.fade(true, () => {
+
+                _activeLevel = true;
+            });
         }
 
         public void restartLevel() {
