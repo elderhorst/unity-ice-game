@@ -1,110 +1,102 @@
 using UnityEngine;
 using System.Collections;
 
-namespace Game {
-
-    public class Player : MonoBehaviour {
-
+namespace IceGame
+{
+    public class Player : MonoBehaviour
+	{
         [SerializeField] private SpriteRenderer _sprite;
 
         private bool _isMoving;
         private bool _isOnLadder;
 
-        public bool IsMoving {
-            get {
-
-                return _isMoving;
-            }
+        public bool IsMoving
+		{
+            get { return _isMoving; }
         }
 
-        public bool IsOnLadder {
-            get {
-
-                return _isOnLadder;
-            }
+        public bool IsOnLadder
+		{
+            get { return _isOnLadder; }
         }
-
-        private void Start() {
-
-        }
-
-        public void reset() {
-
+		
+        public void Reset()
+		{
             _isMoving = false;
             _isOnLadder = false;
         }
 
-        public void setToTransparent() {
-
+        public void SetToTransparent()
+		{
             Color color = _sprite.color;
             color.a = 0;
 
             _sprite.color = color;
         }
 
-        public void fade(bool fadeIn, System.Action onDone = null) {
-
+        public void Fade(bool fadeIn, System.Action onDone = null)
+		{
             _isMoving = true;
 
-            StartCoroutine(Actions.ActionManager.fadeTransition(fadeIn, _sprite, () => {
-
+            StartCoroutine(ActionManager.FadeTransition(fadeIn, _sprite, () =>
+			{
                 _isMoving = false;
 
-                if (onDone != null) {
-                
+                if (onDone != null)
+				{
                     onDone();
                 }
             }));
         }
 
-        public void handleMovement(Movement direction, TileType[,] collisionMap) {
-
+        public void HandleMovement(Movement direction, TileType[,] collisionMap)
+		{
             int mapX = (int)(transform.localPosition.x * 2f);
             int mapY = (int)(transform.localPosition.y * -2f);
 
-            if (direction == Movement.Left || direction == Movement.Right) {
-
-                handleHorizontalDirection(mapX, mapY, direction, collisionMap);
+            if (direction == Movement.Left || direction == Movement.Right)
+			{
+                HandleHorizontalDirection(mapX, mapY, direction, collisionMap);
             }
-            else if (direction == Movement.Up || direction == Movement.Down) {
-
-                handleVerticalDirection(mapX, mapY, direction, collisionMap);
+            else if (direction == Movement.Up || direction == Movement.Down)
+			{
+                HandleVerticalDirection(mapX, mapY, direction, collisionMap);
             }
         }
 
-        private void handleHorizontalDirection(int startX, int startY, Movement direction, TileType[,] collisionMap) {
-
+        private void HandleHorizontalDirection(int startX, int startY, Movement direction, TileType[,] collisionMap)
+		{
             int maxX = collisionMap.GetLength(0) - 1;
             int step = (direction == Movement.Right) ? 1 : -1;
             int destinationX = startX;
 
-            for (int i = startX + step; i >= 0 && i <= maxX; i += step) {
-
-                if (collisionMap[i, startY] != TileType.Solid) {
-
+            for (int i = startX + step; i >= 0 && i <= maxX; i += step)
+			{
+                if (collisionMap[i, startY] != TileType.Solid)
+				{
                     destinationX = i;
 
-                    if (collisionMap[i, startY] == TileType.Ladder) {
-
+                    if (collisionMap[i, startY] == TileType.Ladder)
+					{
                         _isOnLadder = true;
                         break;
                     }
-                    else if (collisionMap[i, startY] == TileType.Walkable) {
-
+                    else if (collisionMap[i, startY] == TileType.Walkable)
+					{
                         break;
                     }
                 }
-                else {
-
+                else
+				{
                     break;
                 }
             }
 
-            move(destinationX, startY);
+            Move(destinationX, startY);
         }
 
-        private void handleVerticalDirection(int startX, int startY, Movement direction, TileType[,] collisionMap) {
-
+        private void HandleVerticalDirection(int startX, int startY, Movement direction, TileType[,] collisionMap)
+		{
             int maxY = collisionMap.GetLength(1) - 1;
             int step = (direction == Movement.Down) ? 1 : -1;
             int destinationY = startY;
@@ -131,25 +123,25 @@ namespace Game {
                 }
             }
 
-            move(startX, destinationY);
+            Move(startX, destinationY);
         }
 
-        private void move(int destinationX, int destinationY) {
-
+        private void Move(int destinationX, int destinationY)
+		{
             _isMoving = true;
             float z = transform.localPosition.z;
 
-            StartCoroutine("moveObject", new Vector3(destinationX / 2f, destinationY / -2f, z));
+            StartCoroutine(MoveObject(new Vector3(destinationX / 2f, destinationY / -2f, z)));
         }
 
-        private IEnumerator moveObject(Vector3 destination) {
-
+        private IEnumerator MoveObject(Vector3 destination)
+		{
             Vector3 start = transform.localPosition;
             float duration = (destination - transform.localPosition).magnitude / 5f;
             float currentTime = 0;
 
-            while (currentTime < duration) {
-
+            while (currentTime < duration)
+			{
                 currentTime = Mathf.Min(currentTime + Time.deltaTime, duration);
                 transform.localPosition = Vector3.Lerp(start, destination, currentTime / duration);
 

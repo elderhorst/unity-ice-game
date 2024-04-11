@@ -1,6 +1,7 @@
-namespace Game {
-
-    public enum TileType {
+namespace IceGame
+{
+    public enum TileType
+	{
         Solid,
         Ice,
         Ladder,

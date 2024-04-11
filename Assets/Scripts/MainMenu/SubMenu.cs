@@ -1,32 +1,31 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-namespace MainMenu {
-
-	public class SubMenu : MonoBehaviour {
-
+namespace IceGame
+{
+	public class SubMenu : MonoBehaviour
+	{
         [SerializeField] protected Button _backButton;
 
         public delegate void ButtonHandler();
         public event ButtonHandler BackButtonClick;
 
-        public virtual void enableButtons() {
-
-			_backButton.onClick.AddListener(onClickBackButton);
+        public virtual void EnableButtons()
+		{
+			_backButton.onClick.AddListener(OnClickBackButton);
 		}
 
-		public virtual void disableButtons() {
-
-			_backButton.onClick.RemoveListener(onClickBackButton);
+		public virtual void DisableButtons()
+		{
+			_backButton.onClick.RemoveListener(OnClickBackButton);
 		}
 
-        protected void onClickBackButton() {
+        protected void OnClickBackButton()
+		{
+            SoundManager.Instance.PlayEffect("ButtonClick");
 
-            Game.SoundManager.Instance.playEffect("ButtonClick");
-
-            if (BackButtonClick != null) {
-
+            if (BackButtonClick != null)
+			{
                 BackButtonClick();
             }
         }

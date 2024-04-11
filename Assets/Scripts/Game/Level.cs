@@ -1,53 +1,52 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Game {
-
-	public abstract class Level : MonoBehaviour {
-
+namespace IceGame
+{
+	public abstract class Level : MonoBehaviour
+	{
 		[SerializeField] protected Player _player;
         [SerializeField] protected Sprite[] _tileSprites;
         [SerializeField] protected Transform _tileContainer;
 
-		protected Managers.InputManager _inputManager;
+		protected InputManager _inputManager;
 
-		protected Game.Tile[,] _tiles;
-        protected Game.TileType[,] _collisionMap;
+		protected Tile[,] _tiles;
+        protected TileType[,] _collisionMap;
 
 		protected int _currentLevel = 1;
 
         protected bool _activeLevel = false;
 
-		protected void Awake() {
+		protected void Awake()
+		{
 
-			_inputManager = new Managers.InputManager();
+			_inputManager = new InputManager();
 		}
 
-		protected void Update() {
-
-            if (!_activeLevel || _player.IsMoving) {
-
+		protected void Update()
+		{
+            if (!_activeLevel || _player.IsMoving)
+			{
                 return;
             }
-            else if (_player.IsOnLadder) {
-
-                handleFinishedLevel();
+            else if (_player.IsOnLadder)
+			{
+                HandleFinishedLevel();
                 return;
             }
 
-            Movement movement = _inputManager.checkForInput();
+            Movement movement = _inputManager.CheckForInput();
 
-            if (movement != Movement.None) {
-
-                _player.handleMovement(movement, _collisionMap);
+            if (movement != Movement.None)
+			{
+                _player.HandleMovement(movement, _collisionMap);
             }
         }
 
-		public abstract void load(int level);
-        public abstract void handleUiFinishedEnterTransition();
-        public abstract void handleFinishedLevel();
+		public abstract void Load(int level);
+        public abstract void HandleUiFinishedEnterTransition();
+        public abstract void HandleFinishedLevel();
 
-		protected abstract void goToNextLevel();
+		protected abstract void GoToNextLevel();
 	}
 }

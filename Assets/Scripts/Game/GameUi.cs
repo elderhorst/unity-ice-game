@@ -2,36 +2,36 @@
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-namespace Game {
-
-	public class GameUi : MonoBehaviour {
-
+namespace IceGame
+{
+	public class GameUi : MonoBehaviour
+	{
 		[SerializeField] private Button _backButton;
 		[SerializeField] private Image _transitionImage;
 		[SerializeField] private Level _level;
 
-		protected void Start() {
-
-			StartCoroutine(Actions.ActionManager.fadeTransition(false, _transitionImage, onFinishedEnterTransition));
+		protected void Start()
+		{
+			StartCoroutine(ActionManager.FadeTransition(false, _transitionImage, OnFinishedEnterTransition));
 		}
 
-		protected virtual void onFinishedEnterTransition() {
+		protected virtual void OnFinishedEnterTransition()
+		{
+			_backButton.onClick.AddListener(OnClickBackButton);
 
-			_backButton.onClick.AddListener(onClickBackButton);
-
-			_level.handleUiFinishedEnterTransition();
+			_level.HandleUiFinishedEnterTransition();
 		}
 
-		private void onFinishedExitTransition() {
-
+		private void OnFinishedExitTransition()
+		{
 			SceneManager.LoadScene("MainMenu");
 		}
 
-		private void onClickBackButton() {
+		private void OnClickBackButton()
+		{
+			SoundManager.Instance.PlayEffect("ButtonClick");
 
-			Game.SoundManager.Instance.playEffect("ButtonClick");
-
-			StartCoroutine(Actions.ActionManager.fadeTransition(true, _transitionImage, onFinishedExitTransition));
+			StartCoroutine(ActionManager.FadeTransition(true, _transitionImage, OnFinishedExitTransition));
 		}
 	}
 }

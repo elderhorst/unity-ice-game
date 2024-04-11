@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-namespace Zen {
-
-	public struct Path {
-
+namespace IceGame
+{
+	public struct Path
+	{
 		public int Width;
 		public int Height;
 
@@ -22,18 +22,18 @@ namespace Zen {
 
 		private System.Random _randomGenerator;
 
-		public Path(int width, int height, Vector2 startPoint) {
-
+		public Path(int width, int height, Vector2 startPoint)
+		{
 			Width = width;
 			Height = height;
 
 			PathMap = new int[Width, Height];
 			TileMap = new int[Width, Height];
 
-			for (int y = 0; y < height; y++) {
-
-				for (int x = 0; x < width; x++) {
-
+			for (int y = 0; y < height; y++)
+			{
+				for (int x = 0; x < width; x++)
+				{
 					TileMap[x, y] = 1;
 				}
 			}
@@ -50,68 +50,69 @@ namespace Zen {
 			_randomGenerator = new System.Random();
 		}
 
-		public Direction chooseRandomPathDirection(Direction ignore) {
-
+		public Direction ChooseRandomPathDirection(Direction ignore)
+		{
 			List<Direction> directions = new List<Direction>();
 
-			// North, South, West, East.
-			if (CurrentPosition.y > 0 && ignore != Direction.North) {
-
+			// Get possible directions from the current position.
+			if (CurrentPosition.y > 0 && ignore != Direction.North)
+			{
 				directions.Add(Direction.North);
 			}
-			if (CurrentPosition.y < Height - 1 && ignore != Direction.South) {
-
+			if (CurrentPosition.y < Height - 1 && ignore != Direction.South)
+			{
 				directions.Add(Direction.South);
 			}
-			if (CurrentPosition.x > 0 && ignore != Direction.West) {
-
+			if (CurrentPosition.x > 0 && ignore != Direction.West)
+			{
 				directions.Add(Direction.West);
 			}
-			if (CurrentPosition.x < Width - 1 && ignore != Direction.East) {
-
+			if (CurrentPosition.x < Width - 1 && ignore != Direction.East)
+			{
 				directions.Add(Direction.East);
 			}
 
-			if (directions.Count == 0) {
-
+			if (directions.Count == 0)
+			{
 				return Direction.Null;
 			}
 
 			return directions[Random.Range(0, directions.Count)];
 		}
 
-		public List<Direction> getRandomOrderOfDirections(Direction ignore) {
-
+		public List<Direction> GetRandomOrderOfDirections(Direction ignore)
+		{
 			List<Direction> directions = new List<Direction>();
 
-			// North, South, West, East.
-			if (CurrentPosition.y > 0 && ignore != Direction.North) {
-
+			// Get possible directions from the current position.
+			if (CurrentPosition.y > 0 && ignore != Direction.North)
+			{
 				directions.Add(Direction.North);
 			}
-			if (CurrentPosition.y < Height - 1 && ignore != Direction.South) {
-
+			if (CurrentPosition.y < Height - 1 && ignore != Direction.South)
+			{
 				directions.Add(Direction.South);
 			}
-			if (CurrentPosition.x > 0 && ignore != Direction.West) {
-
+			if (CurrentPosition.x > 0 && ignore != Direction.West)
+			{
 				directions.Add(Direction.West);
 			}
-			if (CurrentPosition.x < Width - 1 && ignore != Direction.East) {
-
+			if (CurrentPosition.x < Width - 1 && ignore != Direction.East)
+			{
 				directions.Add(Direction.East);
 			}
 
-			directions = shuffle(directions);
+			directions = Shuffle(directions);
 
 			return directions;
 		}
 
-		private List<Direction> shuffle(List<Direction> list) {
-
+		private List<Direction> Shuffle(List<Direction> list)
+		{
 			int n = list.Count;
 
-			while (n > 1) {  
+			while (n > 1)
+			{  
 				n--;  
 				int k = _randomGenerator.Next(n + 1);  
 				Direction value = list[k];  

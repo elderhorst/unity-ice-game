@@ -1,32 +1,32 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Game {
-
-	public abstract class LevelCreator {
-
+namespace IceGame
+{
+	public abstract class LevelCreator
+	{
 		protected int[,] _levelData;
-		protected Game.TileType[,] _collisionMap;
+		protected TileType[,] _collisionMap;
 
 		protected int _width;
 		protected int _height;
+		
+		public abstract Vector2 GetStartingPoint();
 
-		public Game.Tile[,] createTileGameObjects(Transform container, Sprite[] sprites) {
-
-            Game.Tile[,] tiles = new Game.Tile[_width, _height];
+		public Tile[,] CreateTileGameObjects(Transform container, Sprite[] sprites)
+		{
+            Tile[,] tiles = new Tile[_width, _height];
             
-            for (int x = 0; x < _width; x++) {
-
-                for (int y = 0; y < _height; y++) {
-
+            for (int x = 0; x < _width; x++)
+			{
+                for (int y = 0; y < _height; y++)
+				{
                     GameObject obj = new GameObject();
                     obj.transform.parent = container;
                     obj.transform.localPosition = new Vector3(x / 2f, -y / 2f, 0);
                     obj.name = "Tile " + x + " " + y;
 
-                    tiles[x,y] = obj.AddComponent<Game.Tile>();
-                    tiles[x,y].init(sprites[_levelData[x, y]]);
+                    tiles[x,y] = obj.AddComponent<Tile>();
+                    tiles[x,y].Init(sprites[_levelData[x, y]]);
                 }
             }
 
@@ -35,38 +35,36 @@ namespace Game {
 			return tiles;
 		}
 
-		public Game.TileType[,] updateCollisionMap() {
-
-            for (int x = 0; x < _width; x++) {
-
-                for (int y = 0; y < _height; y++) {
-
+		public TileType[,] UpdateCollisionMap()
+		{
+            for (int x = 0; x < _width; x++)
+			{
+                for (int y = 0; y < _height; y++)
+				{
                     int tile = _levelData[x, y];
 
-                    if (tile == 1) {
-
+                    if (tile == 1)
+					{
                         // Ice.
-                        _collisionMap[x, y] = Game.TileType.Ice;
+                        _collisionMap[x, y] = TileType.Ice;
                     }
-                    else if (tile == 2) {
-
-                        _collisionMap[x, y] = Game.TileType.Ladder;
+                    else if (tile == 2)
+					{
+                        _collisionMap[x, y] = TileType.Ladder;
                     }
-                    else if (tile == 4) {
-
-                        _collisionMap[x, y] = Game.TileType.Walkable;
+                    else if (tile == 4)
+					{
+                        _collisionMap[x, y] = TileType.Walkable;
                     }
-                    else {
-
+                    else
+					{
                         // Anything else.
-                        _collisionMap[x, y] = Game.TileType.Solid;
+                        _collisionMap[x, y] = TileType.Solid;
                     }
                 }
             }
 
 			return _collisionMap;
 		}
-
-		public abstract Vector2 getStartingPoint();
 	}
 }

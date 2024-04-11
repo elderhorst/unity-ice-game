@@ -2,10 +2,10 @@
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-namespace MainMenu {
-
-	public class MainMenu : MonoBehaviour {
-
+namespace IceGame
+{
+	public class MainMenu : MonoBehaviour
+	{
 		[SerializeField] private Button _storyButton;
 		[SerializeField] private Button _zenButton;
 		[SerializeField] private Button _instructionsButton;
@@ -24,129 +24,127 @@ namespace MainMenu {
 
 		private string _sceneToLoad;
 
-		private void Start() {
+		private void Start()
+		{
+			SoundManager.Instance.PlayMusic("Overworld");
 
-			Game.SoundManager.Instance.playMusic("Overworld");
-
-			StartCoroutine(Actions.ActionManager.fadeTransition(false, _transitionImage, enableMenuButtons));
+			StartCoroutine(ActionManager.FadeTransition(false, _transitionImage, EnableMenuButtons));
 		}
 
-		private void handleSubMenuClicked(SubMenu subMenu) {
-
+		private void handleSubMenuClicked(SubMenu subMenu)
+		{
 			setSubMenu(subMenu);
-			disableMenuButtons();
+			DisableMenuButtons();
 
-			Vector3 delta = _menu.localPosition - _currentSubMenu.transform.localPosition;
-
-			moveMenus(delta, enableSubMenuButton);
+			MoveMenus(true, EnableSubMenuButton);
 		}
 
-		private void setSubMenu(SubMenu subMenu) {
-
+		private void setSubMenu(SubMenu subMenu)
+		{
 			_currentSubMenu = subMenu;
 
 			_currentSubMenu.transform.localPosition = _subMenuOffscreen.localPosition;
 		}
 
-		private void moveMenus(Vector3 delta, System.Action doneCallback) {
+		private void MoveMenus(bool isSubMenuNewFocus, System.Action doneCallback)
+		{
+			Vector3 mainMenuStart = isSubMenuNewFocus ? Vector3.zero : new Vector3(-Screen.width, 0, 0);
+			Vector3 mainMenuEnd = isSubMenuNewFocus ? new Vector3(-Screen.width, 0, 0) : Vector3.zero;
+			Vector3 subMenuStart = isSubMenuNewFocus ? new Vector3(Screen.width, 0, 0) : Vector3.zero;
+			Vector3 subMenuEnd = isSubMenuNewFocus ? Vector3.zero : new Vector3(Screen.width, 0, 0);
+			float duration = 0.75f;
 
-			Vector3 subStart = _currentSubMenu.transform.localPosition;
-			Vector3 subEnd = _currentSubMenu.transform.localPosition + delta;
-			float duration = 1.25f;
-
-			StartCoroutine(Actions.ActionManager.translateObject(_menu.gameObject, _menu.localPosition, _menu.localPosition + delta, duration));
-			StartCoroutine(Actions.ActionManager.translateObject(_currentSubMenu.gameObject, subStart, subEnd, duration, doneCallback));
+			StartCoroutine(ActionManager.TranslateObject(_menu.gameObject, mainMenuStart, mainMenuEnd, duration));
+			StartCoroutine(ActionManager.TranslateObject(_currentSubMenu.gameObject, subMenuStart, subMenuEnd, duration, doneCallback));
 		}
 
-		private void enableMenuButtons() {
-
-			_storyButton.onClick.AddListener(onClickStoryButton);
-			_zenButton.onClick.AddListener(onClickZenButton);
-			_instructionsButton.onClick.AddListener(onClickInstructionsButton);
-			_settingsButton.onClick.AddListener(onClickSettingsButton);
-			_creditsButton.onClick.AddListener(onClickCreditsButton);
+		private void EnableMenuButtons()
+		{
+			_storyButton.onClick.AddListener(OnClickStoryButton);
+			_zenButton.onClick.AddListener(OnClickZenButton);
+			_instructionsButton.onClick.AddListener(OnClickInstructionsButton);
+			_settingsButton.onClick.AddListener(OnClickSettingsButton);
+			_creditsButton.onClick.AddListener(OnClickCreditsButton);
 		}
 
-		private void disableMenuButtons() {
-
-			_storyButton.onClick.RemoveListener(onClickStoryButton);
-			_zenButton.onClick.RemoveListener(onClickZenButton);
-			_instructionsButton.onClick.RemoveListener(onClickInstructionsButton);
-			_settingsButton.onClick.RemoveListener(onClickSettingsButton);
-			_creditsButton.onClick.RemoveListener(onClickCreditsButton);
+		private void DisableMenuButtons()
+		{
+			_storyButton.onClick.RemoveListener(OnClickStoryButton);
+			_zenButton.onClick.RemoveListener(OnClickZenButton);
+			_instructionsButton.onClick.RemoveListener(OnClickInstructionsButton);
+			_settingsButton.onClick.RemoveListener(OnClickSettingsButton);
+			_creditsButton.onClick.RemoveListener(OnClickCreditsButton);
 		}
 
-		private void enableSubMenuButton() {
-
-			_currentSubMenu.enableButtons();
+		private void EnableSubMenuButton()
+		{
+			_currentSubMenu.EnableButtons();
 
 			_currentSubMenu.BackButtonClick += onClickBackButton;
 		}
 
-		private void disableSubMenuButton() {
-
-			_currentSubMenu.disableButtons();
+		private void DisableSubMenuButton()
+		{
+			_currentSubMenu.DisableButtons();
 
 			_currentSubMenu.BackButtonClick -= onClickBackButton;
 		}
 
-		private void startExitTransition() {
-
-			StartCoroutine(Actions.ActionManager.fadeTransition(true, _transitionImage, onExitTransitionEnd));
+		private void StartExitTransition()
+		{
+			StartCoroutine(ActionManager.FadeTransition(true, _transitionImage, OnExitTransitionEnd));
 		}
 
-		private void onExitTransitionEnd() {
-
+		private void OnExitTransitionEnd()
+		{
 			SceneManager.LoadScene(_sceneToLoad);
 		}
 
-		private void onClickStoryButton() {
-
-			Game.SoundManager.Instance.playEffect("ButtonClick");
+		private void OnClickStoryButton()
+		{
+			SoundManager.Instance.PlayEffect("ButtonClick");
 
 			_sceneToLoad = "Level";
 
-			startExitTransition();
+			StartExitTransition();
 		}
 
-		private void onClickZenButton() {
-
-			Game.SoundManager.Instance.playEffect("ButtonClick");
+		private void OnClickZenButton()
+		{
+			SoundManager.Instance.PlayEffect("ButtonClick");
 
 			_sceneToLoad = "Zen";
 
-			startExitTransition();
+			StartExitTransition();
 		}
 
-		private void onClickInstructionsButton() {
-
-			Game.SoundManager.Instance.playEffect("ButtonClick");
+		private void OnClickInstructionsButton()
+		{
+			SoundManager.Instance.PlayEffect("ButtonClick");
 
 			handleSubMenuClicked(_instructions);
 		}
 
-		private void onClickSettingsButton() {
-
-			Game.SoundManager.Instance.playEffect("ButtonClick");
+		private void OnClickSettingsButton()
+		{
+			SoundManager.Instance.PlayEffect("ButtonClick");
 
 			handleSubMenuClicked(_settings);
 		}
 
-		private void onClickCreditsButton() {
-
-			Game.SoundManager.Instance.playEffect("ButtonClick");
+		private void OnClickCreditsButton()
+		{
+			SoundManager.Instance.PlayEffect("ButtonClick");
 
 			handleSubMenuClicked(_credits);
 		}
 
-		private void onClickBackButton() {
+		private void onClickBackButton()
+		{
+			SoundManager.Instance.PlayEffect("ButtonClick");
 
-			Game.SoundManager.Instance.playEffect("ButtonClick");
-
-			Vector3 delta = _currentSubMenu.transform.localPosition - _menu.localPosition;
-			
-			disableSubMenuButton();
-			moveMenus(delta, enableMenuButtons);
+			DisableSubMenuButton();
+			MoveMenus(false, EnableMenuButtons);
 		}
 	}
 }

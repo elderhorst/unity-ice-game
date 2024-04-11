@@ -1,47 +1,39 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Zen {
-
-	public class LevelGenerator : Game.LevelCreator {
-
+namespace IceGame
+{
+	public class ZenLevelGenerator : LevelCreator
+	{
 		private const int minSize = 7;
 		private const int maxSize = 20;
 
 		private Vector2 _startPoint;
-		private Vector2 _endPoint;
-
-		public LevelGenerator() {
-
-		}
-
-		public void generateNewLevel() {
-
+		
+		public void GenerateNewLevel()
+		{
 			_width = Random.Range(minSize, maxSize + 1);
 			_height = Random.Range(minSize, maxSize + 1);
 
-			_levelData = initLevel();
-			_collisionMap = new Game.TileType[_width, _height];
+			_levelData = InitLevel();
+			_collisionMap = new TileType[_width, _height];
 
 			_startPoint.x = (Random.value > 0.5f) ? Random.Range(0, 2) : Random.Range(_width - 2, _width);
 			_startPoint.y = (Random.value > 0.5f) ? Random.Range(0, 2) : Random.Range(_height - 2, _height);
-			_endPoint = _startPoint;
 			
 			// Do path map last for now.
-			_levelData = generatePath();
+			_levelData = GeneratePath();
 			//createCollisionMap();
 		}
 
-		private int[,] generatePath() {
-
+		private int[,] GeneratePath()
+		{
 			PathGenerator pathGenerator = new PathGenerator();
 
-			return pathGenerator.generate(_width, _height, _startPoint);
+			return pathGenerator.Generate(_width, _height, _startPoint);
 		}
 
-		private int[,] initLevel() {
-
+		private int[,] InitLevel()
+		{
 			int[,] level = new int[_width, _height];
 
 			for (int y = 0; y < _height; y++) {
@@ -55,8 +47,8 @@ namespace Zen {
 			return level;
 		}
 
-		public override Vector2 getStartingPoint() {
-
+		public override Vector2 GetStartingPoint()
+		{
             return _startPoint;
         }
 	}

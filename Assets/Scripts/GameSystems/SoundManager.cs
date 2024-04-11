@@ -1,11 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Game {
-
-	public class SoundManager : MonoBehaviour {
-
+namespace IceGame
+{
+	public class SoundManager : MonoBehaviour
+	{
 		private const string MusicVolumeKey = "MusicVolume";
 		private const string EffectsVolumeKey = "EffectsVolume";
 
@@ -16,11 +15,12 @@ namespace Game {
 		private float _musicVolume;
 		private float _effectVolume;
 
-		public static SoundManager Instance {
-			get {
-
-				if (_instance == null) {
-
+		public static SoundManager Instance
+		{
+			get
+			{
+				if (_instance == null)
+				{
 					GameObject obj = new GameObject();
 					_instance = obj.AddComponent<SoundManager>();
 				}
@@ -29,14 +29,12 @@ namespace Game {
 			}
 		}
 
-		public float MusicVolume {
-			get {
+		public float MusicVolume
+		{
+			get { return _musicVolume; }
 
-				return _musicVolume;
-			 }
-
-			set {
-
+			set
+			{
 				_musicVolume = Mathf.Clamp01(value);
 
 				if (_musicSource != null) {
@@ -48,18 +46,16 @@ namespace Game {
 			}
 		}
 
-		public float EffectVolume {
-			get {
+		public float EffectVolume
+		{
+			get { return _effectVolume; }
 
-				return _effectVolume;
-			 }
-
-			set {
-
+			set
+			{
 				_effectVolume = Mathf.Clamp01(value);
 
-				foreach (AudioSource effect in _effects) {
-
+				foreach (AudioSource effect in _effects)
+				{
 					effect.volume = _effectVolume;
 				}
 
@@ -67,8 +63,8 @@ namespace Game {
 			}
 		}
 
-		private void Awake() {
-
+		private void Awake()
+		{
 			gameObject.name = "SoundManager";
 			DontDestroyOnLoad(this);
 
@@ -78,12 +74,12 @@ namespace Game {
 			_effectVolume = PlayerPrefs.GetFloat(EffectsVolumeKey, 1f);
 		}
 
-		private void Update() {
-
-			for (int i = 0; i < _effects.Count; i++) {
-
-				if (!_effects[i].isPlaying) {
-
+		private void Update()
+		{
+			for (int i = 0; i < _effects.Count; i++)
+			{
+				if (!_effects[i].isPlaying)
+				{
 					Destroy(_effects[i]);
 					_effects.RemoveAt(i);
 
@@ -92,21 +88,22 @@ namespace Game {
 			}
 		}
 
-		public void playMusic(string name) {
-
+		public void PlayMusic(string name)
+		{
 			AudioClip clip = Resources.Load<AudioClip>("Sounds/Music/" + name);
 			
-			if (_musicSource != null) {
+			if (_musicSource != null)
+			{
 
-				if (clip == _musicSource.clip) {
-				
+				if (clip == _musicSource.clip)
+				{
 					return;
 				}
 
 				_musicSource.Stop();
 			}
-			else {
-
+			else
+			{
 				_musicSource = gameObject.AddComponent<AudioSource>();
 			}
 
@@ -116,8 +113,8 @@ namespace Game {
 			_musicSource.Play();
 		}
 
-		public void playEffect(string name) {
-
+		public void PlayEffect(string name)
+		{
 			AudioClip clip = Resources.Load<AudioClip>("Sounds/Effects/" + name);
 			AudioSource source = gameObject.AddComponent<AudioSource>();
 
