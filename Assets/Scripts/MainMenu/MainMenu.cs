@@ -85,14 +85,14 @@ namespace IceGame
 		{
 			_currentSubMenu.EnableButtons();
 
-			_currentSubMenu.BackButtonClick += onClickBackButton;
+			_currentSubMenu.BackButtonClick += OnClickBackButton;
 		}
 
 		private void DisableSubMenuButton()
 		{
 			_currentSubMenu.DisableButtons();
 
-			_currentSubMenu.BackButtonClick -= onClickBackButton;
+			_currentSubMenu.BackButtonClick -= OnClickBackButton;
 		}
 		
 		private async void StartEnterTransition()
@@ -148,7 +148,7 @@ namespace IceGame
 			handleSubMenuClicked(_credits);
 		}
 
-		private void onClickBackButton()
+		private void OnClickBackButton()
 		{
 			SoundManager.Instance.PlayEffect("ButtonClick");
 
