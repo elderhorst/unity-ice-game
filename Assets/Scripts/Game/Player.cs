@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Threading.Tasks;
 
 namespace IceGame
 {
@@ -34,19 +35,13 @@ namespace IceGame
             _sprite.color = color;
         }
 
-        public void Fade(bool fadeIn, System.Action onDone = null)
+        public async Task Fade(bool fadeIn)
 		{
             _isMoving = true;
 
-            StartCoroutine(ActionManager.FadeTransition(fadeIn, _sprite, () =>
-			{
-                _isMoving = false;
-
-                if (onDone != null)
-				{
-                    onDone();
-                }
-            }));
+            await Animate.FadeTransition(fadeIn, _sprite);
+			
+			_isMoving = false;
         }
 
         public void HandleMovement(Movement direction, TileType[,] collisionMap)
@@ -126,15 +121,17 @@ namespace IceGame
             Move(startX, destinationY);
         }
 
-        private void Move(int destinationX, int destinationY)
+        private async void Move(int destinationX, int destinationY)
 		{
             _isMoving = true;
             float z = transform.localPosition.z;
 
-            StartCoroutine(MoveObject(new Vector3(destinationX / 2f, destinationY / -2f, z)));
+            await MoveObject(new Vector3(destinationX / 2f, destinationY / -2f, z));
+			
+			_isMoving = false;
         }
 
-        private IEnumerator MoveObject(Vector3 destination)
+        private async Task MoveObject(Vector3 destination)
 		{
             Vector3 start = transform.localPosition;
             float duration = (destination - transform.localPosition).magnitude / 5f;
@@ -145,10 +142,8 @@ namespace IceGame
                 currentTime = Mathf.Min(currentTime + Time.deltaTime, duration);
                 transform.localPosition = Vector3.Lerp(start, destination, currentTime / duration);
 
-                yield return null;
+                await Task.Yield();
             }
-
-            _isMoving = false;
         }
     }
 }

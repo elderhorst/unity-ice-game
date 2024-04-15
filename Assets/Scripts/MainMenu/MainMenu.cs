@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Threading.Tasks;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -28,25 +29,25 @@ namespace IceGame
 		{
 			SoundManager.Instance.PlayMusic("Overworld");
 
-			StartCoroutine(ActionManager.FadeTransition(false, _transitionImage, EnableMenuButtons));
+			StartEnterTransition();
 		}
 
 		private void handleSubMenuClicked(SubMenu subMenu)
 		{
-			setSubMenu(subMenu);
+			SetSubMenu(subMenu);
 			DisableMenuButtons();
 
 			MoveMenus(true, EnableSubMenuButton);
 		}
 
-		private void setSubMenu(SubMenu subMenu)
+		private void SetSubMenu(SubMenu subMenu)
 		{
 			_currentSubMenu = subMenu;
 
 			_currentSubMenu.transform.localPosition = _subMenuOffscreen.localPosition;
 		}
 
-		private void MoveMenus(bool isSubMenuNewFocus, System.Action doneCallback)
+		private async void MoveMenus(bool isSubMenuNewFocus, System.Action doneCallback)
 		{
 			Vector3 mainMenuStart = isSubMenuNewFocus ? Vector3.zero : new Vector3(-Screen.width, 0, 0);
 			Vector3 mainMenuEnd = isSubMenuNewFocus ? new Vector3(-Screen.width, 0, 0) : Vector3.zero;
@@ -54,8 +55,12 @@ namespace IceGame
 			Vector3 subMenuEnd = isSubMenuNewFocus ? Vector3.zero : new Vector3(Screen.width, 0, 0);
 			float duration = 0.75f;
 
-			StartCoroutine(ActionManager.TranslateObject(_menu.gameObject, mainMenuStart, mainMenuEnd, duration));
-			StartCoroutine(ActionManager.TranslateObject(_currentSubMenu.gameObject, subMenuStart, subMenuEnd, duration, doneCallback));
+			Task animateMainMenu = Animate.TranslateObject(_menu.gameObject, mainMenuStart, mainMenuEnd, duration);
+			Task animateSubMenu = Animate.TranslateObject(_currentSubMenu.gameObject, subMenuStart, subMenuEnd, duration);
+			
+			await Task.WhenAll(animateMainMenu, animateSubMenu);
+			
+			doneCallback();
 		}
 
 		private void EnableMenuButtons()
@@ -89,14 +94,18 @@ namespace IceGame
 
 			_currentSubMenu.BackButtonClick -= onClickBackButton;
 		}
-
-		private void StartExitTransition()
+		
+		private async void StartEnterTransition()
 		{
-			StartCoroutine(ActionManager.FadeTransition(true, _transitionImage, OnExitTransitionEnd));
+			await Animate.FadeTransition(false, _transitionImage);
+			
+			EnableMenuButtons();
 		}
 
-		private void OnExitTransitionEnd()
+		private async void StartExitTransition()
 		{
+			await Animate.FadeTransition(true, _transitionImage);
+			
 			SceneManager.LoadScene(_sceneToLoad);
 		}
 

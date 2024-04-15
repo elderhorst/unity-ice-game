@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace IceGame
 {
@@ -80,7 +81,7 @@ namespace IceGame
             _player.SetToTransparent();
 		}
 		
-		private void TransitionToLevel()
+		private async void TransitionToLevel()
 		{
 			float duration = 1.25f;
             Vector3 levelOffset = new Vector3(16, 0, 0);
@@ -91,11 +92,12 @@ namespace IceGame
             Vector3 currentStart = _levels[_currentLevelIndex].transform.localPosition;
             Vector3 currentEnd = _levels[_currentLevelIndex].transform.localPosition - levelOffset;
 
-            StartCoroutine(ActionManager.TranslateObject(_levels[_previousLevelIndex], previousStart, previousEnd, duration));
-            StartCoroutine(ActionManager.TranslateObject(_levels[_currentLevelIndex], currentStart, currentEnd, duration, () =>
-			{
-                HandleLevelFinishedEnterTransition();
-            }));
+            Task moveOldLevel = Animate.TranslateObject(_levels[_previousLevelIndex], previousStart, previousEnd, duration);
+            Task moveNewLevel = Animate.TranslateObject(_levels[_currentLevelIndex], currentStart, currentEnd, duration);
+			
+			await Task.WhenAll(moveOldLevel, moveNewLevel);
+			
+			HandleLevelFinishedEnterTransition();
 		}
 
         public override void HandleUiFinishedEnterTransition()
@@ -103,31 +105,31 @@ namespace IceGame
             _activeLevel = true;
         }
         
-        public override void HandleFinishedLevel()
+        public override async void HandleFinishedLevel()
 		{
             SoundManager.Instance.PlayEffect("LevelComplete");
 
             _activeLevel = false;
 
-            _player.Fade(false, GoToNextLevel);
+            await _player.Fade(false);
+			
+			GoToNextLevel();
         }
 
-        public void HandleLevelFinishedEnterTransition()
+        public async void HandleLevelFinishedEnterTransition()
 		{
-            _player.Fade(true, () =>
-			{
-                _activeLevel = true;
-            });
+            await _player.Fade(true);
+			
+			_activeLevel = true;
         }
 
-        public void RestartLevel()
+        public async void RestartLevel()
 		{
-            _player.Fade(false, () =>
-			{
-                _player.Reset();
+            await _player.Fade(false);
+			
+			_player.Reset();
 
-                Load(_currentLevel);
-            });
+            Load(_currentLevel);
         }
 
         protected override void GoToNextLevel()

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -12,7 +13,7 @@ namespace IceGame
 
 		protected void Start()
 		{
-			StartCoroutine(ActionManager.FadeTransition(false, _transitionImage, OnFinishedEnterTransition));
+			FadeUi(false, OnFinishedEnterTransition);
 		}
 
 		protected virtual void OnFinishedEnterTransition()
@@ -31,7 +32,14 @@ namespace IceGame
 		{
 			SoundManager.Instance.PlayEffect("ButtonClick");
 
-			StartCoroutine(ActionManager.FadeTransition(true, _transitionImage, OnFinishedExitTransition));
+			FadeUi(true, OnFinishedExitTransition);
+		}
+		
+		private async void FadeUi(bool fadeIn, Action onFinishedTransition)
+		{
+			await Animate.FadeTransition(fadeIn, _transitionImage);
+			
+			onFinishedTransition();
 		}
 	}
 }
