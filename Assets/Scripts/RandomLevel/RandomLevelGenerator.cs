@@ -2,7 +2,7 @@
 
 namespace IceGame
 {
-	public class ZenLevelGenerator : LevelCreator
+	public class RandomLevelGenerator : LevelCreator
 	{
 		private const int minSize = 7;
 		private const int maxWidth = 26;

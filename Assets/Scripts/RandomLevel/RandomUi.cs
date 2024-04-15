@@ -3,10 +3,10 @@ using UnityEngine.UI;
 
 namespace IceGame
 {
-    public class ZenUi : GameUi
+    public class RandomLevelUi : GameUi
 	{
         [SerializeField] private Button _restartButton;
-		[SerializeField] private ZenLevel _zenLevel;
+		[SerializeField] private RandomLevel _randomLevel;
 
         protected override void OnFinishedEnterTransition()
 		{
@@ -19,7 +19,7 @@ namespace IceGame
 		{
 			SoundManager.Instance.PlayEffect("ButtonClick");
 
-			_zenLevel.RestartLevel();
+			_randomLevel.RestartLevel();
 		}
     }
 }

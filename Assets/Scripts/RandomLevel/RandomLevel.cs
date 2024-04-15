@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 
 namespace IceGame
 {
-    public class ZenLevel : Level
+    public class RandomLevel : Level
 	{
-        private ZenLevelGenerator _levelCreator;
+        private RandomLevelGenerator _levelCreator;
 
         private List<GameObject> _levels;
         private int _currentLevelIndex;
@@ -16,7 +16,7 @@ namespace IceGame
 
         private void Start()
 		{
-            _levelCreator = new ZenLevelGenerator();
+            _levelCreator = new RandomLevelGenerator();
 
             _levels = new List<GameObject> () { null, null };
             _currentLevelIndex = 0;
