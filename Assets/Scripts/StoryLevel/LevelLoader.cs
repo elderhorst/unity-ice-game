@@ -13,7 +13,7 @@ namespace IceGame
 
 		private void LoadFile(string filename)
 		{
-			string path = "Levels/" + filename;
+			string path = StringKey.LevelFolderPath + filename;
 			TextAsset file = Resources.Load(path) as TextAsset;
 
             char[] charSeparators = new char[] {'\n', '\r'};

@@ -27,7 +27,7 @@ namespace IceGame
 
 		private void Start()
 		{
-			SoundManager.Instance.PlayMusic("Overworld");
+			SoundManager.Instance.PlayMusic(StringKey.BackgroundMusic);
 
 			StartEnterTransition();
 		}
@@ -111,46 +111,46 @@ namespace IceGame
 
 		private void OnClickStoryButton()
 		{
-			SoundManager.Instance.PlayEffect("ButtonClick");
+			SoundManager.Instance.PlayEffect(StringKey.ButtonClickEffect);
 
-			_sceneToLoad = "Level";
+			_sceneToLoad = StringKey.StoryLevelScene;
 
 			StartExitTransition();
 		}
 
 		private void OnClickZenButton()
 		{
-			SoundManager.Instance.PlayEffect("ButtonClick");
+			SoundManager.Instance.PlayEffect(StringKey.ButtonClickEffect);
 
-			_sceneToLoad = "Zen";
+			_sceneToLoad = StringKey.RandomLevelScene;
 
 			StartExitTransition();
 		}
 
 		private void OnClickInstructionsButton()
 		{
-			SoundManager.Instance.PlayEffect("ButtonClick");
+			SoundManager.Instance.PlayEffect(StringKey.ButtonClickEffect);
 
 			handleSubMenuClicked(_instructions);
 		}
 
 		private void OnClickSettingsButton()
 		{
-			SoundManager.Instance.PlayEffect("ButtonClick");
+			SoundManager.Instance.PlayEffect(StringKey.ButtonClickEffect);
 
 			handleSubMenuClicked(_settings);
 		}
 
 		private void OnClickCreditsButton()
 		{
-			SoundManager.Instance.PlayEffect("ButtonClick");
+			SoundManager.Instance.PlayEffect(StringKey.ButtonClickEffect);
 
 			handleSubMenuClicked(_credits);
 		}
 
 		private void OnClickBackButton()
 		{
-			SoundManager.Instance.PlayEffect("ButtonClick");
+			SoundManager.Instance.PlayEffect(StringKey.ButtonClickEffect);
 
 			DisableSubMenuButton();
 			MoveMenus(false, EnableMenuButtons);

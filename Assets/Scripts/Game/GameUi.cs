@@ -25,12 +25,12 @@ namespace IceGame
 
 		private void OnFinishedExitTransition()
 		{
-			SceneManager.LoadScene("MainMenu");
+			SceneManager.LoadScene(StringKey.MainMenuScene);
 		}
 
 		private void OnClickBackButton()
 		{
-			SoundManager.Instance.PlayEffect("ButtonClick");
+			SoundManager.Instance.PlayEffect(StringKey.ButtonClickEffect);
 
 			FadeUi(true, OnFinishedExitTransition);
 		}

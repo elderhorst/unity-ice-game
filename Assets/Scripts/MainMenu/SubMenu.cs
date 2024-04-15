@@ -22,7 +22,7 @@ namespace IceGame
 
         protected void OnClickBackButton()
 		{
-            SoundManager.Instance.PlayEffect("ButtonClick");
+            SoundManager.Instance.PlayEffect(StringKey.ButtonClickEffect);
 
             if (BackButtonClick != null)
 			{

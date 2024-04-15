@@ -17,7 +17,7 @@ namespace IceGame
         
         private void OnClickRestartButton()
 		{
-			SoundManager.Instance.PlayEffect("ButtonClick");
+			SoundManager.Instance.PlayEffect(StringKey.ButtonClickEffect);
 
 			_randomLevel.RestartLevel();
 		}
