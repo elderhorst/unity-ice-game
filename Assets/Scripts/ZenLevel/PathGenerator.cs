@@ -9,7 +9,7 @@ namespace IceGame
 	{
 		GenerationStatus _status;
 
-		public int[,] Generate(int width, int height, Vector2 startPoint)
+		public Path Generate(int width, int height, Vector2 startPoint)
 		{
 			Path? path;
 			_status = new GenerationStatus();
@@ -35,10 +35,8 @@ namespace IceGame
 
 				return Generate(width, height, startPoint);
 			}
-
-			path = AddRandomObstacles(path.Value);
-
-			return path.Value.TileMap;
+			
+			return path.Value;
 		}
 
 		private Path? AttemptToGeneratePath(int width, int height, Vector2 startPoint)
@@ -196,42 +194,6 @@ namespace IceGame
 			}
 
 			return true;
-		}
-
-		private Path AddRandomObstacles(Path path) {
-
-			int minRocks = 8;
-			int maxRocks = 40;
-			int minSize = 49;
-			int maxSize = 400;
-			int size = path.Width * path.Height;
-
-			float scaledValue = (size - minSize) / (maxSize - minSize);
-			int numberOfRocks = Mathf.RoundToInt(Mathf.Lerp(minRocks, maxRocks, scaledValue));
-
-			for (int i = 0; i < numberOfRocks; i++)
-			{
-				path = PlaceRandomObstacle(path);
-			}
-
-			return path;
-		}
-
-		private Path PlaceRandomObstacle(Path path)
-		{
-			while (true)
-			{
-				int randomX = Random.Range(0, path.Width);
-				int randomY = Random.Range(0, path.Height);
-
-				if (path.PathMap[randomX, randomY] == 0 && path.TileMap[randomX, randomY] == 1)
-				{
-					path.TileMap[randomX, randomY] = 3;
-					break;
-				}
-			}
-
-			return path;
 		}
 	}
 }
