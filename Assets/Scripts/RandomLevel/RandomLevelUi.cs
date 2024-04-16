@@ -12,7 +12,7 @@ namespace IceGame
 		
 		public async Task FadeLevelText(bool fadeIn, float duration)
 		{
-			await Animate.FadeText(fadeIn, 0.3f, _levelText);
+			await Animate.FadeText(fadeIn, duration, _levelText);
 		}
 		
 		public void UpdateLevelText(int number)
