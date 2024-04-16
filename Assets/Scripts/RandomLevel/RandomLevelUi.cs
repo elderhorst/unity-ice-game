@@ -8,7 +8,7 @@ namespace IceGame
 	{
         [SerializeField] private Button _restartButton;
 		[SerializeField] private RandomLevel _randomLevel;
-		[SerializeField] private Text _levelText;
+		[SerializeField] private TMPro.TextMeshProUGUI _levelText;
 		
 		public async Task FadeLevelText(bool fadeIn, float duration)
 		{
