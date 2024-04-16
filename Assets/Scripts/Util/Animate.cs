@@ -47,6 +47,26 @@ namespace IceGame
 				await Task.Yield();
 			}
 		}
+		
+		public static async Task FadeText(bool fadeIn, float duration, MaskableGraphic graphic)
+		{
+			float start = fadeIn ? 0 : 1;
+			float end = fadeIn ? 1 : 0;
+
+			float currentTime = 0;
+
+			while (currentTime <= duration)
+			{
+				Color color = graphic.color;
+				color.a = Mathf.Lerp(start, end, currentTime / duration);
+
+				graphic.color = color;
+
+				currentTime += Time.deltaTime;
+
+				await Task.Yield();
+			}
+		}
 
 		public static async Task TranslateObject(GameObject obj, Vector3 start, Vector3 end, float duration)
 		{

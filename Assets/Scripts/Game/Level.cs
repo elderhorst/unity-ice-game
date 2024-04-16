@@ -19,7 +19,6 @@ namespace IceGame
 
 		protected void Awake()
 		{
-
 			_inputManager = new InputManager();
 		}
 

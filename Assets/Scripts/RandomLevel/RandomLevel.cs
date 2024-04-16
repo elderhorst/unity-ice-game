@@ -6,6 +6,8 @@ namespace IceGame
 {
     public class RandomLevel : Level
 	{
+		[SerializeField] private RandomLevelUi _levelUi;
+		
         private RandomLevelGenerator _levelCreator;
 
         private List<GameObject> _levels;
@@ -24,6 +26,8 @@ namespace IceGame
             _previousLevel = _currentLevel - 1;
             
             _player.SetToTransparent();
+			_levelUi.SetLevelTextToTransparent();
+			_levelUi.UpdateLevelText(_currentLevel);
 
             Load(_currentLevel);
         }
@@ -94,10 +98,18 @@ namespace IceGame
 
             Task moveOldLevel = Animate.TranslateObject(_levels[_previousLevelIndex], previousStart, previousEnd, duration);
             Task moveNewLevel = Animate.TranslateObject(_levels[_currentLevelIndex], currentStart, currentEnd, duration);
+			Task animateText = AnimateLevelText(duration);
 			
-			await Task.WhenAll(moveOldLevel, moveNewLevel);
+			await Task.WhenAll(moveOldLevel, moveNewLevel, animateText);
 			
 			HandleLevelFinishedEnterTransition();
+		}
+		
+		private async Task AnimateLevelText(float duration)
+		{
+			await _levelUi.FadeLevelText(false, duration / 2f);
+			_levelUi.UpdateLevelText(_currentLevel);
+			await _levelUi.FadeLevelText(true, duration / 2f);
 		}
 
         public override void HandleUiFinishedEnterTransition()
@@ -118,14 +130,16 @@ namespace IceGame
 
         public async void HandleLevelFinishedEnterTransition()
 		{
-            await _player.Fade(true);
+			await _player.Fade(true);
+			
+			_levelUi.UpdateLevelText(_currentLevel);
 			
 			_activeLevel = true;
         }
 
         public async void RestartLevel()
 		{
-            await _player.Fade(false);
+			await _player.Fade(false);
 			
 			_player.Reset();
 
